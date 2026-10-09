@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DevoirsRouteImport } from './routes/devoirs'
+import { Route as IaRouteImport } from './routes/ia'
+import { Route as MatieresRouteImport } from './routes/matieres'
+import { Route as NotesRouteImport } from './routes/notes'
+import { Route as OutilsRouteImport } from './routes/outils'
+import { Route as ParametresRouteImport } from './routes/parametres'
+import { Route as ScannerRouteImport } from './routes/scanner'
+import { Route as TransformerRouteImport } from './routes/transformer'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevoirsRoute = DevoirsRouteImport.update({
+  id: '/devoirs',
+  path: '/devoirs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IaRoute = IaRouteImport.update({
+  id: '/ia',
+  path: '/ia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatieresRoute = MatieresRouteImport.update({
+  id: '/matieres',
+  path: '/matieres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutilsRoute = OutilsRouteImport.update({
+  id: '/outils',
+  path: '/outils',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParametresRoute = ParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScannerRoute = ScannerRouteImport.update({
+  id: '/scanner',
+  path: '/scanner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransformerRoute = TransformerRouteImport.update({
+  id: '/transformer',
+  path: '/transformer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/devoirs': typeof DevoirsRoute
+  '/ia': typeof IaRoute
+  '/matieres': typeof MatieresRoute
+  '/notes': typeof NotesRoute
+  '/outils': typeof OutilsRoute
+  '/parametres': typeof ParametresRoute
+  '/scanner': typeof ScannerRoute
+  '/transformer': typeof TransformerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/devoirs': typeof DevoirsRoute
+  '/ia': typeof IaRoute
+  '/matieres': typeof MatieresRoute
+  '/notes': typeof NotesRoute
+  '/outils': typeof OutilsRoute
+  '/parametres': typeof ParametresRoute
+  '/scanner': typeof ScannerRoute
+  '/transformer': typeof TransformerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/devoirs': typeof DevoirsRoute
+  '/ia': typeof IaRoute
+  '/matieres': typeof MatieresRoute
+  '/notes': typeof NotesRoute
+  '/outils': typeof OutilsRoute
+  '/parametres': typeof ParametresRoute
+  '/scanner': typeof ScannerRoute
+  '/transformer': typeof TransformerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/devoirs'
+    | '/ia'
+    | '/matieres'
+    | '/notes'
+    | '/outils'
+    | '/parametres'
+    | '/scanner'
+    | '/transformer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/devoirs'
+    | '/ia'
+    | '/matieres'
+    | '/notes'
+    | '/outils'
+    | '/parametres'
+    | '/scanner'
+    | '/transformer'
+  id:
+    | '__root__'
+    | '/'
+    | '/devoirs'
+    | '/ia'
+    | '/matieres'
+    | '/notes'
+    | '/outils'
+    | '/parametres'
+    | '/scanner'
+    | '/transformer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DevoirsRoute: typeof DevoirsRoute
+  IaRoute: typeof IaRoute
+  MatieresRoute: typeof MatieresRoute
+  NotesRoute: typeof NotesRoute
+  OutilsRoute: typeof OutilsRoute
+  ParametresRoute: typeof ParametresRoute
+  ScannerRoute: typeof ScannerRoute
+  TransformerRoute: typeof TransformerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/devoirs': {
+      id: '/devoirs'
+      path: '/devoirs'
+      fullPath: '/devoirs'
+      preLoaderRoute: typeof DevoirsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ia': {
+      id: '/ia'
+      path: '/ia'
+      fullPath: '/ia'
+      preLoaderRoute: typeof IaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/matieres': {
+      id: '/matieres'
+      path: '/matieres'
+      fullPath: '/matieres'
+      preLoaderRoute: typeof MatieresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outils': {
+      id: '/outils'
+      path: '/outils'
+      fullPath: '/outils'
+      preLoaderRoute: typeof OutilsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parametres': {
+      id: '/parametres'
+      path: '/parametres'
+      fullPath: '/parametres'
+      preLoaderRoute: typeof ParametresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scanner': {
+      id: '/scanner'
+      path: '/scanner'
+      fullPath: '/scanner'
+      preLoaderRoute: typeof ScannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transformer': {
+      id: '/transformer'
+      path: '/transformer'
+      fullPath: '/transformer'
+      preLoaderRoute: typeof TransformerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DevoirsRoute: DevoirsRoute,
+  IaRoute: IaRoute,
+  MatieresRoute: MatieresRoute,
+  NotesRoute: NotesRoute,
+  OutilsRoute: OutilsRoute,
+  ParametresRoute: ParametresRoute,
+  ScannerRoute: ScannerRoute,
+  TransformerRoute: TransformerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
