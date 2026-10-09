@@ -130,3 +130,4 @@
   .feature-empty { min-height: 350px; } .skeleton-columns { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+.collapsed .brand-name { display: none; }
