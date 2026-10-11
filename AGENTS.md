@@ -10,7 +10,8 @@
 <!-- LOVABLE:END -->
 
 ## Application architecture
-- Keep shared Maelio navigation in AppShell around its Outlet, with separate French section routes; every section must be independently navigable.
-- Keep empty workspace data and nullable profile identity in the browser-safe Maelio module; never seed examples or infer a student identity.
+- Keep shared Maelio navigation in AppShell, rendered by the `_authenticated` layout around its Outlet; workspace sections live under it so every section is gated by sign-in, while landing and auth pages stay public.
+- Read the student's identity only from the `profiles` row of the signed-in user (created by a signup trigger); privileged account actions run in authenticated server functions that verify the caller first.
+- Keep empty workspace data in the browser-safe Maelio module; never seed examples or infer a student identity.
 - Phase-one actions must disclose their unavailable state without saving, uploading, or producing results; reusable skeletons are reserved for actual pending navigation.
 - Use global semantic design tokens and reusable Button variants for all presentation and controls to preserve consistent accessibility.
