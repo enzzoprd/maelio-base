@@ -5,7 +5,7 @@ export function accountLabel(profile: StudentProfile) {
 }
 export const emptyWorkspace = { subjects: [], files: [], notes: [], homework: [] };
 export const sections = [
-  { path: '/', label: 'Accueil', icon: 'home' },
+  { path: '/accueil', label: 'Accueil', icon: 'home' },
   { path: '/matieres', label: 'Matières', icon: 'folder' },
   { path: '/ia', label: 'IA', icon: 'sparkles' },
   { path: '/notes', label: 'Notes', icon: 'notes' },

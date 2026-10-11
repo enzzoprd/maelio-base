@@ -9,6 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
 import { Route as AuthenticatedAccueilRouteImport } from './routes/_authenticated/accueil'
 import { Route as AuthenticatedDevoirsRouteImport } from './routes/_authenticated/devoirs'
 import { Route as AuthenticatedIaRouteImport } from './routes/_authenticated/ia'
@@ -19,54 +23,76 @@ import { Route as AuthenticatedParametresRouteImport } from './routes/_authentic
 import { Route as AuthenticatedScannerRouteImport } from './routes/_authenticated/scanner'
 import { Route as AuthenticatedTransformerRouteImport } from './routes/_authenticated/transformer'
 
-const AuthenticatedAccueilRoute = AuthenticatedAccueilRouteImport.update({
-  id: '/_authenticated/accueil',
-  path: '/accueil',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
+  id: '/reinitialiser-mot-de-passe',
+  path: '/reinitialiser-mot-de-passe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccueilRoute = AuthenticatedAccueilRouteImport.update({
+  id: '/accueil',
+  path: '/accueil',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDevoirsRoute = AuthenticatedDevoirsRouteImport.update({
-  id: '/_authenticated/devoirs',
+  id: '/devoirs',
   path: '/devoirs',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedIaRoute = AuthenticatedIaRouteImport.update({
-  id: '/_authenticated/ia',
+  id: '/ia',
   path: '/ia',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMatieresRoute = AuthenticatedMatieresRouteImport.update({
-  id: '/_authenticated/matieres',
+  id: '/matieres',
   path: '/matieres',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
-  id: '/_authenticated/notes',
+  id: '/notes',
   path: '/notes',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedOutilsRoute = AuthenticatedOutilsRouteImport.update({
-  id: '/_authenticated/outils',
+  id: '/outils',
   path: '/outils',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedParametresRoute = AuthenticatedParametresRouteImport.update({
-  id: '/_authenticated/parametres',
+  id: '/parametres',
   path: '/parametres',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedScannerRoute = AuthenticatedScannerRouteImport.update({
-  id: '/_authenticated/scanner',
+  id: '/scanner',
   path: '/scanner',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedTransformerRoute =
   AuthenticatedTransformerRouteImport.update({
-    id: '/_authenticated/transformer',
+    id: '/transformer',
     path: '/transformer',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/connexion': typeof ConnexionRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/accueil': typeof AuthenticatedAccueilRoute
   '/devoirs': typeof AuthenticatedDevoirsRoute
   '/ia': typeof AuthenticatedIaRoute
@@ -78,6 +104,9 @@ export interface FileRoutesByFullPath {
   '/transformer': typeof AuthenticatedTransformerRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/connexion': typeof ConnexionRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/accueil': typeof AuthenticatedAccueilRoute
   '/devoirs': typeof AuthenticatedDevoirsRoute
   '/ia': typeof AuthenticatedIaRoute
@@ -90,6 +119,10 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/connexion': typeof ConnexionRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/_authenticated/accueil': typeof AuthenticatedAccueilRoute
   '/_authenticated/devoirs': typeof AuthenticatedDevoirsRoute
   '/_authenticated/ia': typeof AuthenticatedIaRoute
@@ -103,6 +136,9 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
+    | '/connexion'
+    | '/reinitialiser-mot-de-passe'
     | '/accueil'
     | '/devoirs'
     | '/ia'
@@ -114,6 +150,9 @@ export interface FileRouteTypes {
     | '/transformer'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
+    | '/connexion'
+    | '/reinitialiser-mot-de-passe'
     | '/accueil'
     | '/devoirs'
     | '/ia'
@@ -125,6 +164,10 @@ export interface FileRouteTypes {
     | '/transformer'
   id:
     | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/connexion'
+    | '/reinitialiser-mot-de-passe'
     | '/_authenticated/accueil'
     | '/_authenticated/devoirs'
     | '/_authenticated/ia'
@@ -137,6 +180,109 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  ConnexionRoute: typeof ConnexionRoute
+  ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reinitialiser-mot-de-passe': {
+      id: '/reinitialiser-mot-de-passe'
+      path: '/reinitialiser-mot-de-passe'
+      fullPath: '/reinitialiser-mot-de-passe'
+      preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/accueil': {
+      id: '/_authenticated/accueil'
+      path: '/accueil'
+      fullPath: '/accueil'
+      preLoaderRoute: typeof AuthenticatedAccueilRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/devoirs': {
+      id: '/_authenticated/devoirs'
+      path: '/devoirs'
+      fullPath: '/devoirs'
+      preLoaderRoute: typeof AuthenticatedDevoirsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ia': {
+      id: '/_authenticated/ia'
+      path: '/ia'
+      fullPath: '/ia'
+      preLoaderRoute: typeof AuthenticatedIaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/matieres': {
+      id: '/_authenticated/matieres'
+      path: '/matieres'
+      fullPath: '/matieres'
+      preLoaderRoute: typeof AuthenticatedMatieresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notes': {
+      id: '/_authenticated/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof AuthenticatedNotesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/outils': {
+      id: '/_authenticated/outils'
+      path: '/outils'
+      fullPath: '/outils'
+      preLoaderRoute: typeof AuthenticatedOutilsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/parametres': {
+      id: '/_authenticated/parametres'
+      path: '/parametres'
+      fullPath: '/parametres'
+      preLoaderRoute: typeof AuthenticatedParametresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/scanner': {
+      id: '/_authenticated/scanner'
+      path: '/scanner'
+      fullPath: '/scanner'
+      preLoaderRoute: typeof AuthenticatedScannerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/transformer': {
+      id: '/_authenticated/transformer'
+      path: '/transformer'
+      fullPath: '/transformer'
+      preLoaderRoute: typeof AuthenticatedTransformerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+  }
+}
+
+interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccueilRoute: typeof AuthenticatedAccueilRoute
   AuthenticatedDevoirsRoute: typeof AuthenticatedDevoirsRoute
   AuthenticatedIaRoute: typeof AuthenticatedIaRoute
@@ -148,75 +294,7 @@ export interface RootRouteChildren {
   AuthenticatedTransformerRoute: typeof AuthenticatedTransformerRoute
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/_authenticated/accueil': {
-      id: '/_authenticated/accueil'
-      path: '/accueil'
-      fullPath: '/accueil'
-      preLoaderRoute: typeof AuthenticatedAccueilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/devoirs': {
-      id: '/_authenticated/devoirs'
-      path: '/devoirs'
-      fullPath: '/devoirs'
-      preLoaderRoute: typeof AuthenticatedDevoirsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/ia': {
-      id: '/_authenticated/ia'
-      path: '/ia'
-      fullPath: '/ia'
-      preLoaderRoute: typeof AuthenticatedIaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/matieres': {
-      id: '/_authenticated/matieres'
-      path: '/matieres'
-      fullPath: '/matieres'
-      preLoaderRoute: typeof AuthenticatedMatieresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/notes': {
-      id: '/_authenticated/notes'
-      path: '/notes'
-      fullPath: '/notes'
-      preLoaderRoute: typeof AuthenticatedNotesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/outils': {
-      id: '/_authenticated/outils'
-      path: '/outils'
-      fullPath: '/outils'
-      preLoaderRoute: typeof AuthenticatedOutilsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/parametres': {
-      id: '/_authenticated/parametres'
-      path: '/parametres'
-      fullPath: '/parametres'
-      preLoaderRoute: typeof AuthenticatedParametresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/scanner': {
-      id: '/_authenticated/scanner'
-      path: '/scanner'
-      fullPath: '/scanner'
-      preLoaderRoute: typeof AuthenticatedScannerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/transformer': {
-      id: '/_authenticated/transformer'
-      path: '/transformer'
-      fullPath: '/transformer'
-      preLoaderRoute: typeof AuthenticatedTransformerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-  }
-}
-
-const rootRouteChildren: RootRouteChildren = {
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccueilRoute: AuthenticatedAccueilRoute,
   AuthenticatedDevoirsRoute: AuthenticatedDevoirsRoute,
   AuthenticatedIaRoute: AuthenticatedIaRoute,
@@ -226,6 +304,16 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedParametresRoute: AuthenticatedParametresRoute,
   AuthenticatedScannerRoute: AuthenticatedScannerRoute,
   AuthenticatedTransformerRoute: AuthenticatedTransformerRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  ConnexionRoute: ConnexionRoute,
+  ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
