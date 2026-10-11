@@ -10,99 +10,136 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DevoirsRouteImport } from './routes/devoirs'
-import { Route as IaRouteImport } from './routes/ia'
-import { Route as MatieresRouteImport } from './routes/matieres'
-import { Route as NotesRouteImport } from './routes/notes'
-import { Route as OutilsRouteImport } from './routes/outils'
-import { Route as ParametresRouteImport } from './routes/parametres'
-import { Route as ScannerRouteImport } from './routes/scanner'
-import { Route as TransformerRouteImport } from './routes/transformer'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
+import { Route as AuthenticatedAccueilRouteImport } from './routes/_authenticated/accueil'
+import { Route as AuthenticatedDevoirsRouteImport } from './routes/_authenticated/devoirs'
+import { Route as AuthenticatedIaRouteImport } from './routes/_authenticated/ia'
+import { Route as AuthenticatedMatieresRouteImport } from './routes/_authenticated/matieres'
+import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
+import { Route as AuthenticatedOutilsRouteImport } from './routes/_authenticated/outils'
+import { Route as AuthenticatedParametresRouteImport } from './routes/_authenticated/parametres'
+import { Route as AuthenticatedScannerRouteImport } from './routes/_authenticated/scanner'
+import { Route as AuthenticatedTransformerRouteImport } from './routes/_authenticated/transformer'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DevoirsRoute = DevoirsRouteImport.update({
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
+  id: '/reinitialiser-mot-de-passe',
+  path: '/reinitialiser-mot-de-passe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccueilRoute = AuthenticatedAccueilRouteImport.update({
+  id: '/accueil',
+  path: '/accueil',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDevoirsRoute = AuthenticatedDevoirsRouteImport.update({
   id: '/devoirs',
   path: '/devoirs',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const IaRoute = IaRouteImport.update({
+const AuthenticatedIaRoute = AuthenticatedIaRouteImport.update({
   id: '/ia',
   path: '/ia',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const MatieresRoute = MatieresRouteImport.update({
+const AuthenticatedMatieresRoute = AuthenticatedMatieresRouteImport.update({
   id: '/matieres',
   path: '/matieres',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const NotesRoute = NotesRouteImport.update({
+const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
   id: '/notes',
   path: '/notes',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const OutilsRoute = OutilsRouteImport.update({
+const AuthenticatedOutilsRoute = AuthenticatedOutilsRouteImport.update({
   id: '/outils',
   path: '/outils',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ParametresRoute = ParametresRouteImport.update({
+const AuthenticatedParametresRoute = AuthenticatedParametresRouteImport.update({
   id: '/parametres',
   path: '/parametres',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ScannerRoute = ScannerRouteImport.update({
+const AuthenticatedScannerRoute = AuthenticatedScannerRouteImport.update({
   id: '/scanner',
   path: '/scanner',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const TransformerRoute = TransformerRouteImport.update({
-  id: '/transformer',
-  path: '/transformer',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedTransformerRoute =
+  AuthenticatedTransformerRouteImport.update({
+    id: '/transformer',
+    path: '/transformer',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/devoirs': typeof DevoirsRoute
-  '/ia': typeof IaRoute
-  '/matieres': typeof MatieresRoute
-  '/notes': typeof NotesRoute
-  '/outils': typeof OutilsRoute
-  '/parametres': typeof ParametresRoute
-  '/scanner': typeof ScannerRoute
-  '/transformer': typeof TransformerRoute
+  '/connexion': typeof ConnexionRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
+  '/accueil': typeof AuthenticatedAccueilRoute
+  '/devoirs': typeof AuthenticatedDevoirsRoute
+  '/ia': typeof AuthenticatedIaRoute
+  '/matieres': typeof AuthenticatedMatieresRoute
+  '/notes': typeof AuthenticatedNotesRoute
+  '/outils': typeof AuthenticatedOutilsRoute
+  '/parametres': typeof AuthenticatedParametresRoute
+  '/scanner': typeof AuthenticatedScannerRoute
+  '/transformer': typeof AuthenticatedTransformerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/devoirs': typeof DevoirsRoute
-  '/ia': typeof IaRoute
-  '/matieres': typeof MatieresRoute
-  '/notes': typeof NotesRoute
-  '/outils': typeof OutilsRoute
-  '/parametres': typeof ParametresRoute
-  '/scanner': typeof ScannerRoute
-  '/transformer': typeof TransformerRoute
+  '/connexion': typeof ConnexionRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
+  '/accueil': typeof AuthenticatedAccueilRoute
+  '/devoirs': typeof AuthenticatedDevoirsRoute
+  '/ia': typeof AuthenticatedIaRoute
+  '/matieres': typeof AuthenticatedMatieresRoute
+  '/notes': typeof AuthenticatedNotesRoute
+  '/outils': typeof AuthenticatedOutilsRoute
+  '/parametres': typeof AuthenticatedParametresRoute
+  '/scanner': typeof AuthenticatedScannerRoute
+  '/transformer': typeof AuthenticatedTransformerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/devoirs': typeof DevoirsRoute
-  '/ia': typeof IaRoute
-  '/matieres': typeof MatieresRoute
-  '/notes': typeof NotesRoute
-  '/outils': typeof OutilsRoute
-  '/parametres': typeof ParametresRoute
-  '/scanner': typeof ScannerRoute
-  '/transformer': typeof TransformerRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/connexion': typeof ConnexionRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
+  '/_authenticated/accueil': typeof AuthenticatedAccueilRoute
+  '/_authenticated/devoirs': typeof AuthenticatedDevoirsRoute
+  '/_authenticated/ia': typeof AuthenticatedIaRoute
+  '/_authenticated/matieres': typeof AuthenticatedMatieresRoute
+  '/_authenticated/notes': typeof AuthenticatedNotesRoute
+  '/_authenticated/outils': typeof AuthenticatedOutilsRoute
+  '/_authenticated/parametres': typeof AuthenticatedParametresRoute
+  '/_authenticated/scanner': typeof AuthenticatedScannerRoute
+  '/_authenticated/transformer': typeof AuthenticatedTransformerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/connexion'
+    | '/reinitialiser-mot-de-passe'
+    | '/accueil'
     | '/devoirs'
     | '/ia'
     | '/matieres'
@@ -114,6 +151,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/connexion'
+    | '/reinitialiser-mot-de-passe'
+    | '/accueil'
     | '/devoirs'
     | '/ia'
     | '/matieres'
@@ -125,26 +165,25 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/devoirs'
-    | '/ia'
-    | '/matieres'
-    | '/notes'
-    | '/outils'
-    | '/parametres'
-    | '/scanner'
-    | '/transformer'
+    | '/_authenticated'
+    | '/connexion'
+    | '/reinitialiser-mot-de-passe'
+    | '/_authenticated/accueil'
+    | '/_authenticated/devoirs'
+    | '/_authenticated/ia'
+    | '/_authenticated/matieres'
+    | '/_authenticated/notes'
+    | '/_authenticated/outils'
+    | '/_authenticated/parametres'
+    | '/_authenticated/scanner'
+    | '/_authenticated/transformer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DevoirsRoute: typeof DevoirsRoute
-  IaRoute: typeof IaRoute
-  MatieresRoute: typeof MatieresRoute
-  NotesRoute: typeof NotesRoute
-  OutilsRoute: typeof OutilsRoute
-  ParametresRoute: typeof ParametresRoute
-  ScannerRoute: typeof ScannerRoute
-  TransformerRoute: typeof TransformerRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  ConnexionRoute: typeof ConnexionRoute
+  ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -156,75 +195,125 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/devoirs': {
-      id: '/devoirs'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reinitialiser-mot-de-passe': {
+      id: '/reinitialiser-mot-de-passe'
+      path: '/reinitialiser-mot-de-passe'
+      fullPath: '/reinitialiser-mot-de-passe'
+      preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/accueil': {
+      id: '/_authenticated/accueil'
+      path: '/accueil'
+      fullPath: '/accueil'
+      preLoaderRoute: typeof AuthenticatedAccueilRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/devoirs': {
+      id: '/_authenticated/devoirs'
       path: '/devoirs'
       fullPath: '/devoirs'
-      preLoaderRoute: typeof DevoirsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedDevoirsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/ia': {
-      id: '/ia'
+    '/_authenticated/ia': {
+      id: '/_authenticated/ia'
       path: '/ia'
       fullPath: '/ia'
-      preLoaderRoute: typeof IaRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedIaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/matieres': {
-      id: '/matieres'
+    '/_authenticated/matieres': {
+      id: '/_authenticated/matieres'
       path: '/matieres'
       fullPath: '/matieres'
-      preLoaderRoute: typeof MatieresRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedMatieresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/notes': {
-      id: '/notes'
+    '/_authenticated/notes': {
+      id: '/_authenticated/notes'
       path: '/notes'
       fullPath: '/notes'
-      preLoaderRoute: typeof NotesRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedNotesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/outils': {
-      id: '/outils'
+    '/_authenticated/outils': {
+      id: '/_authenticated/outils'
       path: '/outils'
       fullPath: '/outils'
-      preLoaderRoute: typeof OutilsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedOutilsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/parametres': {
-      id: '/parametres'
+    '/_authenticated/parametres': {
+      id: '/_authenticated/parametres'
       path: '/parametres'
       fullPath: '/parametres'
-      preLoaderRoute: typeof ParametresRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedParametresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/scanner': {
-      id: '/scanner'
+    '/_authenticated/scanner': {
+      id: '/_authenticated/scanner'
       path: '/scanner'
       fullPath: '/scanner'
-      preLoaderRoute: typeof ScannerRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedScannerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/transformer': {
-      id: '/transformer'
+    '/_authenticated/transformer': {
+      id: '/_authenticated/transformer'
       path: '/transformer'
       fullPath: '/transformer'
-      preLoaderRoute: typeof TransformerRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedTransformerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccueilRoute: typeof AuthenticatedAccueilRoute
+  AuthenticatedDevoirsRoute: typeof AuthenticatedDevoirsRoute
+  AuthenticatedIaRoute: typeof AuthenticatedIaRoute
+  AuthenticatedMatieresRoute: typeof AuthenticatedMatieresRoute
+  AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
+  AuthenticatedOutilsRoute: typeof AuthenticatedOutilsRoute
+  AuthenticatedParametresRoute: typeof AuthenticatedParametresRoute
+  AuthenticatedScannerRoute: typeof AuthenticatedScannerRoute
+  AuthenticatedTransformerRoute: typeof AuthenticatedTransformerRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccueilRoute: AuthenticatedAccueilRoute,
+  AuthenticatedDevoirsRoute: AuthenticatedDevoirsRoute,
+  AuthenticatedIaRoute: AuthenticatedIaRoute,
+  AuthenticatedMatieresRoute: AuthenticatedMatieresRoute,
+  AuthenticatedNotesRoute: AuthenticatedNotesRoute,
+  AuthenticatedOutilsRoute: AuthenticatedOutilsRoute,
+  AuthenticatedParametresRoute: AuthenticatedParametresRoute,
+  AuthenticatedScannerRoute: AuthenticatedScannerRoute,
+  AuthenticatedTransformerRoute: AuthenticatedTransformerRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DevoirsRoute: DevoirsRoute,
-  IaRoute: IaRoute,
-  MatieresRoute: MatieresRoute,
-  NotesRoute: NotesRoute,
-  OutilsRoute: OutilsRoute,
-  ParametresRoute: ParametresRoute,
-  ScannerRoute: ScannerRoute,
-  TransformerRoute: TransformerRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  ConnexionRoute: ConnexionRoute,
+  ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
