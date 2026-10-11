@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Link, Outlet, useNavigate, useRouteContext, useRouterState } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LogOut, Settings } from 'lucide-react';
@@ -31,7 +31,7 @@ export function AppShell() {
     await supabase.auth.signOut();
     navigate({ to: '/connexion', replace: true });
   }
-  const AccountMenu = ({ children, label }: { children: React.ReactNode; label: string }) => <DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label={label} title={label}>{children}</Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="w-56"><DropdownMenuLabel className="truncate">{profile.firstName?.trim() || user.email}</DropdownMenuLabel><DropdownMenuSeparator/><DropdownMenuItem asChild><Link to="/parametres"><Settings/>Profil et paramètres</Link></DropdownMenuItem><DropdownMenuItem onSelect={signOut}><LogOut/>Se déconnecter</DropdownMenuItem></DropdownMenuContent></DropdownMenu>;
+  const AccountMenu = ({ children, label }: { children: ReactNode; label: string }) => <DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label={label} title={label}>{children}</Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="w-56"><DropdownMenuLabel className="truncate">{profile.firstName?.trim() || user.email}</DropdownMenuLabel><DropdownMenuSeparator/><DropdownMenuItem asChild><Link to="/parametres"><Settings/>Profil et paramètres</Link></DropdownMenuItem><DropdownMenuItem onSelect={signOut}><LogOut/>Se déconnecter</DropdownMenuItem></DropdownMenuContent></DropdownMenu>;
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => sections.filter((_, index) => !mobile || index > 3).map(item => {
     const Icon = icons[item.icon];
     return <Link key={item.path} to={item.path} onClick={() => setMoreOpen(false)} title={item.label} aria-current={pathname === item.path ? 'page' : undefined} className={`nav-item ${pathname === item.path ? 'active' : ''}`}><Icon/>{(!collapsed || mobile) && <span>{item.label}</span>}</Link>;
