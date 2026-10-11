@@ -1,7 +1,7 @@
 export type StudentProfile = { firstName: string | null };
 export const initialProfile: StudentProfile = { firstName: null };
 export function accountLabel(profile: StudentProfile) {
-  return profile.firstName?.trim() || 'Non connecté';
+  return profile.firstName?.trim() || 'Mon profil';
 }
 export const emptyWorkspace = { subjects: [], files: [], notes: [], homework: [] };
 export const sections = [

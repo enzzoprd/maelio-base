@@ -70,7 +70,7 @@ function AuthPage() {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-sm">
-        <div className="mb-8 flex justify-center"><Link to="/" aria-label="Accueil Maelio"><Brand /></Link></div>
+        <div className="mb-8 flex justify-center"><Brand /></div>
         <div className="rounded-lg border bg-card p-6 shadow-sm">
           {sent ? (
             <div className="text-center" role="status">

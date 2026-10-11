@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { supabase } from '@/integrations/supabase/client';
 import { FolderOpen, NotebookPen, Sparkles, ListTodo } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Brand } from '@/components/maelio/visuals';
@@ -17,6 +19,8 @@ const features = [
 ];
 
 function Landing() {
+  const navigate = useNavigate();
+  useEffect(() => { supabase.auth.getSession().then(({ data }) => { if (data.session) navigate({ to: '/accueil', replace: true }); }); }, [navigate]);
   return (
     <main className="mx-auto flex min-h-dvh max-w-4xl flex-col px-6 py-8">
       <header className="flex items-center justify-between gap-4">
