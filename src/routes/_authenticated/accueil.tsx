@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FolderArt, PageSkeleton } from '@/components/maelio/visuals';
 import { UnavailableAction } from '@/components/maelio/feature-page';
 import { pageHead } from '@/lib/maelio';
-export const Route = createFileRoute('/')({ head: () => pageHead('Accueil', 'Votre espace étudiant Maelio : matières, notes, fichiers et devoirs réunis au même endroit.'), component: HomePage, pendingComponent: PageSkeleton });
+export const Route = createFileRoute('/_authenticated/accueil')({ head: () => pageHead('Accueil', 'Votre espace étudiant Maelio : matières, notes, fichiers et devoirs réunis au même endroit.'), component: HomePage, pendingComponent: PageSkeleton });
 const shortcuts = [ { path: '/ia', label: 'Assistant IA', Icon: Sparkles, tone: 'ai' }, { path: '/scanner', label: 'Scanner', Icon: ScanLine, tone: 'scan' }, { path: '/transformer', label: 'Transformer', Icon: Repeat2, tone: 'transform' }, { path: '/outils', label: 'Formules & Outils', Icon: Calculator, tone: 'tools' } ] as const;
 function HomePage() {
   return <div className="page"><div className="page-intro"><div><div className="eyebrow"><span className="h-1.5 w-1.5 rounded-full bg-primary"/> VOTRE ESPACE ÉTUDIANT</div><h1>Bienvenue sur Maelio</h1><p className="intro-sub">Un espace pour apprendre. À votre rythme.</p></div><svg className="intro-decoration" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M23 60c-10-21 0-36 17-40 7 18 2 29-13 36M35 62c-3-23 12-33 29-30-1 19-12 27-25 27M29 64l8-26M35 63l17-17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></div>
