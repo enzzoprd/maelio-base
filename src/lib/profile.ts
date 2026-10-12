@@ -8,11 +8,11 @@ export const profileQuery = (userId: string) =>
     queryFn: async (): Promise<StudentProfile> => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('first_name')
+        .select('first_name, avatar_url, onboarded_at')
         .eq('user_id', userId)
         .maybeSingle();
       if (error) throw error;
-      return { firstName: data?.first_name ?? null };
+      return { firstName: data?.first_name ?? null, avatarUrl: data?.avatar_url ?? null, onboardedAt: data?.onboarded_at ?? null };
     },
   });
 
