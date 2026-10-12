@@ -15,6 +15,13 @@
       "when": 1791763724493,
       "tag": "0001_create_subjects_and_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791763745006,
+      "tag": "0002_avatars_storage_policies",
+      "breakpoints": true
     }
   ]
 }
