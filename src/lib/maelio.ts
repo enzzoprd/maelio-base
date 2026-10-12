@@ -1,5 +1,5 @@
-export type StudentProfile = { firstName: string | null };
-export const initialProfile: StudentProfile = { firstName: null };
+export type StudentProfile = { firstName: string | null; avatarUrl: string | null; onboardedAt: string | null };
+export const initialProfile: StudentProfile = { firstName: null, avatarUrl: null, onboardedAt: null };
 export function accountLabel(profile: StudentProfile) {
   return profile.firstName?.trim() || 'Mon profil';
 }
