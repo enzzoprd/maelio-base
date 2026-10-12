@@ -14,12 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          subject_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          subject_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          subject_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           created_at: string
           first_name: string | null
           id: string
+          onboarded_at: string | null
           updated_at: string
           user_id: string
         }
@@ -28,6 +67,7 @@ export type Database = {
           created_at?: string
           first_name?: string | null
           id?: string
+          onboarded_at?: string | null
           updated_at?: string
           user_id: string
         }
@@ -36,6 +76,31 @@ export type Database = {
           created_at?: string
           first_name?: string | null
           id?: string
+          onboarded_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subjects: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
           updated_at?: string
           user_id?: string
         }
