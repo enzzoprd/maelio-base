@@ -12,10 +12,14 @@ import { frenchAuthError, safeRedirect } from '@/lib/profile';
 
 type Mode = 'connexion' | 'inscription' | 'oubli';
 export const Route = createFileRoute('/connexion')({
-  validateSearch: (s: Record<string, unknown>): { mode?: Mode; redirect?: string } => ({
-    mode: s.mode === 'inscription' || s.mode === 'oubli' ? s.mode : undefined,
-    redirect: typeof s.redirect === 'string' ? s.redirect : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { mode?: Mode | undefined; redirect?: string | undefined } => {
+    const mode = s['mode'];
+    const redirect = s['redirect'];
+    return {
+      mode: mode === 'inscription' || mode === 'oubli' ? mode : undefined,
+      redirect: typeof redirect === 'string' ? redirect : undefined,
+    };
+  },
   head: () => pageHead('Connexion', 'Connecte-toi ou crée ton compte Maelio.'),
   component: AuthPage,
 });
