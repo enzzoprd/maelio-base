@@ -100,6 +100,19 @@ function SettingsPage() {
         <section className="rounded-lg border bg-card p-6">
           <h2 className="text-lg font-semibold">Profil</h2>
           <p className="mt-1 text-sm text-muted-foreground">Connecté avec {user.email}</p>
+          <div className="mt-4 flex items-center gap-4">
+            {avatarSignedUrl
+              ? <img src={avatarSignedUrl} alt="Ta photo de profil" className="h-16 w-16 rounded-full object-cover" />
+              : <span className="flex h-16 w-16 items-center justify-center rounded-full border bg-muted" aria-hidden="true">{profile?.firstName?.trim()?.[0]?.toUpperCase() ?? <UserRound size={24}/>}</span>}
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" disabled={busy === 'avatar'} asChild>
+                <label className="cursor-pointer"><Camera/>{profile?.avatarUrl ? 'Changer la photo' : 'Ajouter une photo'}
+                  <input type="file" accept="image/*" className="sr-only" onChange={e => { const f = e.target.files?.[0]; if (f) uploadAvatar(f); e.target.value = ''; }}/>
+                </label>
+              </Button>
+              {profile?.avatarUrl && <Button variant="ghost" disabled={busy === 'avatar'} onClick={removeAvatar}><Trash2/>Retirer</Button>}
+            </div>
+          </div>
           <form className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end" onSubmit={saveName}>
             <div className="flex-1 space-y-1.5"><Label htmlFor="first-name">Prénom</Label><Input id="first-name" value={firstName} onChange={e => setFirstName(e.target.value)} maxLength={60} autoComplete="given-name" /></div>
             <Button type="submit" disabled={busy === 'name'}>Enregistrer</Button>
