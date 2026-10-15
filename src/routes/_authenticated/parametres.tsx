@@ -28,6 +28,33 @@ function SettingsPage() {
   const [confirmText, setConfirmText] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
   const isEmailAccount = user.app_metadata?.provider === 'email';
+  const avatarSignedUrl = useAvatarUrl(profile?.avatarUrl);
+
+  async function uploadAvatar(file: File) {
+    if (!file.type.startsWith('image/')) { toast.error('Choisis une image (PNG, JPG…).'); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error('L’image doit faire moins de 5 Mo.'); return; }
+    setBusy('avatar');
+    const path = `${user.id}/avatar`;
+    const { error: uploadError } = await supabase.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+    if (uploadError) { setBusy(null); toast.error('L’envoi de la photo a échoué. Réessaie.'); return; }
+    const { error } = await supabase.from('profiles').update({ avatar_url: path }).eq('user_id', user.id);
+    setBusy(null);
+    if (error) { toast.error('Impossible d’enregistrer la photo. Réessaie.'); return; }
+    toast.success('Photo de profil enregistrée.');
+    queryClient.invalidateQueries({ queryKey: ['profile', user.id] });
+    queryClient.invalidateQueries({ queryKey: ['avatar-url'] });
+  }
+
+  async function removeAvatar() {
+    setBusy('avatar');
+    if (profile?.avatarUrl) await supabase.storage.from('avatars').remove([profile.avatarUrl]);
+    const { error } = await supabase.from('profiles').update({ avatar_url: null }).eq('user_id', user.id);
+    setBusy(null);
+    if (error) { toast.error('Impossible de retirer la photo. Réessaie.'); return; }
+    toast.success('Photo de profil retirée.');
+    queryClient.invalidateQueries({ queryKey: ['profile', user.id] });
+    queryClient.invalidateQueries({ queryKey: ['avatar-url'] });
+  }
 
   useEffect(() => { setFirstName(profile?.firstName ?? ''); }, [profile?.firstName]);
 
