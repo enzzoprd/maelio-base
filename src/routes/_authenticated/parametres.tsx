@@ -10,6 +10,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { PageSkeleton } from '@/components/maelio/visuals';
 import { pageHead } from '@/lib/maelio';
 import { frenchAuthError, profileQuery } from '@/lib/profile';
+import { useAvatarUrl } from '@/lib/workspace';
+import { Camera, Trash2, UserRound } from 'lucide-react';
 import { deleteMyAccount } from '@/lib/account.functions';
 
 export const Route = createFileRoute('/_authenticated/parametres')({ head: () => pageHead('Paramètres', 'Ton compte et tes préférences.'), component: SettingsPage, pendingComponent: PageSkeleton });
