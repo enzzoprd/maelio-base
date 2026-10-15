@@ -8,4 +8,13 @@
 - [x] Inscription, connexion (e-mail + Google), vérification e-mail, mot de passe oublié.
 - [x] Rubriques réservées aux comptes connectés ; prénom réel issu du profil.
 - [x] Paramètres : prénom, mot de passe, suppression du compte.
-- [ ] Onboarding court, photo de profil, matières et notes réelles.
+
+# Phase 3 — Espace réel
+- [x] Onboarding court (prénom à la première connexion).
+- [x] Photo de profil (stockage privé, ajout/retrait dans Paramètres).
+- [x] Matières réelles : ajouter, renommer, supprimer.
+- [x] Notes réelles : créer, modifier, supprimer, lier à une matière.
+- [x] Accueil branché sur les vraies matières et notes.
+- [ ] Fichiers par matière (upload dans les dossiers).
+- [ ] Devoirs réels avec dates.
+- [ ] Recherche réelle dans matières et notes.
