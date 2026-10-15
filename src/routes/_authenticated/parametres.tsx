@@ -10,6 +10,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { PageSkeleton } from '@/components/maelio/visuals';
 import { pageHead } from '@/lib/maelio';
 import { frenchAuthError, profileQuery } from '@/lib/profile';
+import { useAvatarUrl } from '@/lib/workspace';
+import { Camera, Trash2, UserRound } from 'lucide-react';
 import { deleteMyAccount } from '@/lib/account.functions';
 
 export const Route = createFileRoute('/_authenticated/parametres')({ head: () => pageHead('Paramètres', 'Ton compte et tes préférences.'), component: SettingsPage, pendingComponent: PageSkeleton });
@@ -26,6 +28,33 @@ function SettingsPage() {
   const [confirmText, setConfirmText] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
   const isEmailAccount = user.app_metadata?.provider === 'email';
+  const avatarSignedUrl = useAvatarUrl(profile?.avatarUrl);
+
+  async function uploadAvatar(file: File) {
+    if (!file.type.startsWith('image/')) { toast.error('Choisis une image (PNG, JPG…).'); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error('L’image doit faire moins de 5 Mo.'); return; }
+    setBusy('avatar');
+    const path = `${user.id}/avatar`;
+    const { error: uploadError } = await supabase.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+    if (uploadError) { setBusy(null); toast.error('L’envoi de la photo a échoué. Réessaie.'); return; }
+    const { error } = await supabase.from('profiles').update({ avatar_url: path }).eq('user_id', user.id);
+    setBusy(null);
+    if (error) { toast.error('Impossible d’enregistrer la photo. Réessaie.'); return; }
+    toast.success('Photo de profil enregistrée.');
+    queryClient.invalidateQueries({ queryKey: ['profile', user.id] });
+    queryClient.invalidateQueries({ queryKey: ['avatar-url'] });
+  }
+
+  async function removeAvatar() {
+    setBusy('avatar');
+    if (profile?.avatarUrl) await supabase.storage.from('avatars').remove([profile.avatarUrl]);
+    const { error } = await supabase.from('profiles').update({ avatar_url: null }).eq('user_id', user.id);
+    setBusy(null);
+    if (error) { toast.error('Impossible de retirer la photo. Réessaie.'); return; }
+    toast.success('Photo de profil retirée.');
+    queryClient.invalidateQueries({ queryKey: ['profile', user.id] });
+    queryClient.invalidateQueries({ queryKey: ['avatar-url'] });
+  }
 
   useEffect(() => { setFirstName(profile?.firstName ?? ''); }, [profile?.firstName]);
 
@@ -71,6 +100,19 @@ function SettingsPage() {
         <section className="rounded-lg border bg-card p-6">
           <h2 className="text-lg font-semibold">Profil</h2>
           <p className="mt-1 text-sm text-muted-foreground">Connecté avec {user.email}</p>
+          <div className="mt-4 flex items-center gap-4">
+            {avatarSignedUrl
+              ? <img src={avatarSignedUrl} alt="Ta photo de profil" className="h-16 w-16 rounded-full object-cover" />
+              : <span className="flex h-16 w-16 items-center justify-center rounded-full border bg-muted" aria-hidden="true">{profile?.firstName?.trim()?.[0]?.toUpperCase() ?? <UserRound size={24}/>}</span>}
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" disabled={busy === 'avatar'} asChild>
+                <label className="cursor-pointer"><Camera/>{profile?.avatarUrl ? 'Changer la photo' : 'Ajouter une photo'}
+                  <input type="file" accept="image/*" className="sr-only" onChange={e => { const f = e.target.files?.[0]; if (f) uploadAvatar(f); e.target.value = ''; }}/>
+                </label>
+              </Button>
+              {profile?.avatarUrl && <Button variant="ghost" disabled={busy === 'avatar'} onClick={removeAvatar}><Trash2/>Retirer</Button>}
+            </div>
+          </div>
           <form className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end" onSubmit={saveName}>
             <div className="flex-1 space-y-1.5"><Label htmlFor="first-name">Prénom</Label><Input id="first-name" value={firstName} onChange={e => setFirstName(e.target.value)} maxLength={60} autoComplete="given-name" /></div>
             <Button type="submit" disabled={busy === 'name'}>Enregistrer</Button>

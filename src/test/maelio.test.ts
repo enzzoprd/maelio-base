@@ -11,10 +11,10 @@ describe('Maelio workspace rules', () => {
   it('never invents a first name when the profile has none', () => {
     expect(initialProfile.firstName).toBeNull();
     expect(accountLabel(initialProfile)).toBe('Mon profil');
-    expect(accountLabel({ firstName: '  ' })).toBe('Mon profil');
+    expect(accountLabel({ ...initialProfile, firstName: '  ' })).toBe('Mon profil');
   });
   it('uses the first name from the real profile', () => {
-    expect(accountLabel({ firstName: '  Camille  ' })).toBe('Camille');
+    expect(accountLabel({ ...initialProfile, firstName: '  Camille  ' })).toBe('Camille');
   });
   it('only redirects to same-site pages after sign-in', () => {
     expect(safeRedirect('/notes')).toBe('/notes');
