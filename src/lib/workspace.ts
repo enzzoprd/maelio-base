@@ -49,3 +49,37 @@ export function useAvatarUrl(path: string | null | undefined) {
 export function formatDate(iso: string) {
   return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso));
 }
+
+export type Homework = { id: string; title: string; details: string; due_date: string; subject_id: string | null; done: boolean };
+
+export const homeworkQuery = (userId: string) =>
+  queryOptions({
+    queryKey: ['homework', userId],
+    queryFn: async (): Promise<Homework[]> => {
+      const { data, error } = await supabase
+        .from('homework')
+        .select('id, title, details, due_date, subject_id, done')
+        .eq('user_id', userId)
+        .order('due_date', { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+/** Local YYYY-MM-DD for a date (defaults to today). */
+export function isoDay(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Upcoming = not done and due today or later, soonest first. */
+export function upcomingHomework(items: Homework[], today = isoDay()) {
+  return items.filter(h => !h.done && h.due_date >= today).sort((a, b) => a.due_date.localeCompare(b.due_date));
+}
+
+export function dueLabel(due: string, today = isoDay()) {
+  const days = Math.round((Date.parse(due) - Date.parse(today)) / 86400000);
+  if (days === 0) return 'Pour aujourd’hui';
+  if (days === 1) return 'Pour demain';
+  if (days < 0) return `En retard · ${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(due))}`;
+  return `Pour le ${new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(due))}`;
+}
