@@ -5,7 +5,7 @@ import { FolderArt, PageSkeleton } from '@/components/maelio/visuals';
 import { pageHead } from '@/lib/maelio';
 import { useQuery } from '@tanstack/react-query';
 import { profileQuery } from '@/lib/profile';
-import { formatDate, notesQuery, subjectsQuery } from '@/lib/workspace';
+import { dueLabel, formatDate, homeworkQuery, notesQuery, subjectsQuery, upcomingHomework } from '@/lib/workspace';
 
 export const Route = createFileRoute('/_authenticated/accueil')({ head: () => pageHead('Accueil', 'Votre espace étudiant Maelio : matières, notes, fichiers et devoirs réunis au même endroit.'), component: HomePage, pendingComponent: PageSkeleton });
 const shortcuts = [ { path: '/ia', label: 'Assistant IA', Icon: Sparkles, tone: 'ai' }, { path: '/scanner', label: 'Scanner', Icon: ScanLine, tone: 'scan' }, { path: '/transformer', label: 'Transformer', Icon: Repeat2, tone: 'transform' }, { path: '/outils', label: 'Formules & Outils', Icon: Calculator, tone: 'tools' } ] as const;
@@ -15,6 +15,8 @@ function HomePage() {
   const { data: profile } = useQuery(profileQuery(user.id));
   const { data: subjects = [] } = useQuery(subjectsQuery(user.id));
   const { data: notes = [] } = useQuery(notesQuery(user.id));
+  const { data: homework = [] } = useQuery(homeworkQuery(user.id));
+  const upcoming = upcomingHomework(homework).slice(0, 4);
   const name = profile?.firstName?.trim();
   return <div className="page"><div className="page-intro"><div><div className="eyebrow"><span className="h-1.5 w-1.5 rounded-full bg-primary"/> VOTRE ESPACE ÉTUDIANT</div><h1>{name ? `Bonjour ${name}` : 'Bienvenue sur Maelio'}</h1><p className="intro-sub">Un espace pour apprendre. À votre rythme.</p></div><svg className="intro-decoration" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M23 60c-10-21 0-36 17-40 7 18 2 29-13 36M35 62c-3-23 12-33 29-30-1 19-12 27-25 27M29 64l8-26M35 63l17-17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></div>
     <section><div className="section-heading"><h2>Mes matières</h2><Button variant="link" size="sm" asChild><Link to="/matieres">Tout voir<ArrowUpRight/></Link></Button></div>
@@ -37,6 +39,6 @@ function HomePage() {
       )}
     </section></div>
     <section className="quick-section"><div className="section-heading"><h2>À portée de main</h2></div><div className="quick-grid">{shortcuts.map(item => <Link key={item.path} to={item.path} className="quick-card"><span className={`quick-icon tone-${item.tone}`}><item.Icon/></span><span>{item.label}</span><ArrowUpRight/></Link>)}</div></section>
-    <section className="homework"><div className="section-heading"><h2>Devoirs à venir</h2><Button variant="link" size="sm" asChild><Link to="/devoirs">Mes devoirs<ArrowUpRight/></Link></Button></div><div className="homework-empty"><ListTodo size={19} strokeWidth={1.5}/><span>Aucun devoir à venir. L’esprit tranquille.</span></div></section><div className="page-footer"><Leaf size={12} strokeWidth={1.5}/><span>Un peu d’ordre, plus de sérénité.</span></div>
+    <section className="homework"><div className="section-heading"><h2>Devoirs à venir</h2><Button variant="link" size="sm" asChild><Link to="/devoirs">Mes devoirs<ArrowUpRight/></Link></Button></div>{upcoming.length === 0 ? <div className="homework-empty"><ListTodo size={19} strokeWidth={1.5}/><span>Aucun devoir à venir. L’esprit tranquille.</span></div> : <ul className="grid gap-2" aria-label="Devoirs à venir">{upcoming.map(h => <li key={h.id} className="flex items-center gap-3 rounded-lg border bg-card px-4 py-3"><ListTodo size={18} strokeWidth={1.5} className="text-muted-foreground"/><span className="min-w-0 flex-1 truncate font-medium">{h.title}</span><span className="text-xs text-muted-foreground">{dueLabel(h.due_date)}</span></li>)}</ul>}</section><div className="page-footer"><Leaf size={12} strokeWidth={1.5}/><span>Un peu d’ordre, plus de sérénité.</span></div>
   </div>;
 }
