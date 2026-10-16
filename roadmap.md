@@ -15,6 +15,6 @@
 - [x] Matières réelles : ajouter, renommer, supprimer.
 - [x] Notes réelles : créer, modifier, supprimer, lier à une matière.
 - [x] Accueil branché sur les vraies matières et notes.
-- [ ] Fichiers par matière (upload dans les dossiers).
+- [x] Fichiers par matière (upload dans les dossiers).
 - [x] Devoirs réels avec dates.
 - [ ] Recherche réelle dans matières et notes.
