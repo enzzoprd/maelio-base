@@ -71,6 +71,29 @@ export function isoDay(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+export type SubjectFile = { id: string; subject_id: string; file_name: string; storage_path: string; size_bytes: number; mime_type: string; created_at: string };
+
+export const subjectFilesQuery = (userId: string, subjectId: string) =>
+  queryOptions({
+    queryKey: ['subject-files', userId, subjectId],
+    queryFn: async (): Promise<SubjectFile[]> => {
+      const { data, error } = await supabase
+        .from('subject_files')
+        .select('id, subject_id, file_name, storage_path, size_bytes, mime_type, created_at')
+        .eq('user_id', userId)
+        .eq('subject_id', subjectId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+export function formatFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} o`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} Ko`;
+  return `${(bytes / (1024 * 1024)).toFixed(1).replace('.', ',')} Mo`;
+}
+
 /** Upcoming = not done and due today or later, soonest first. */
 export function upcomingHomework(items: Homework[], today = isoDay()) {
   return items.filter(h => !h.done && h.due_date >= today).sort((a, b) => a.due_date.localeCompare(b.due_date));
