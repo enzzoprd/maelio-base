@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { FolderPlus, Pencil, Trash2 } from 'lucide-react';
@@ -68,8 +68,10 @@ function SubjectsPage() {
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-label="Mes matières">
           {subjects.map(s => (
             <li key={s.id} className="flex items-center gap-3 rounded-lg border bg-card p-4">
-              <FolderArt small/>
-              <span className="flex-1 truncate font-medium">{s.name}</span>
+              <Link to="/matieres/$subjectId" params={{ subjectId: s.id }} className="flex min-w-0 flex-1 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring" aria-label={`Ouvrir ${s.name}`}>
+                <FolderArt small/>
+                <span className="truncate font-medium">{s.name}</span>
+              </Link>
               <Button variant="ghost" size="icon" onClick={() => openEdit(s)} aria-label={`Renommer ${s.name}`} title="Renommer"><Pencil size={16}/></Button>
               <Button variant="ghost" size="icon" onClick={() => setDeleting(s)} aria-label={`Supprimer ${s.name}`} title="Supprimer"><Trash2 size={16}/></Button>
             </li>

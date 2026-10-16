@@ -22,6 +22,7 @@ import { Route as AuthenticatedOutilsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedParametresRouteImport } from './routes/_authenticated/parametres'
 import { Route as AuthenticatedScannerRouteImport } from './routes/_authenticated/scanner'
 import { Route as AuthenticatedTransformerRouteImport } from './routes/_authenticated/transformer'
+import { Route as AuthenticatedMatieresSubjectIdRouteImport } from './routes/_authenticated/matieres.$subjectId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -88,6 +89,12 @@ const AuthenticatedTransformerRoute =
     path: '/transformer',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMatieresSubjectIdRoute =
+  AuthenticatedMatieresSubjectIdRouteImport.update({
+    id: '/$subjectId',
+    path: '/$subjectId',
+    getParentRoute: () => AuthenticatedMatieresRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,12 +103,13 @@ export interface FileRoutesByFullPath {
   '/accueil': typeof AuthenticatedAccueilRoute
   '/devoirs': typeof AuthenticatedDevoirsRoute
   '/ia': typeof AuthenticatedIaRoute
-  '/matieres': typeof AuthenticatedMatieresRoute
+  '/matieres': typeof AuthenticatedMatieresRouteWithChildren
   '/notes': typeof AuthenticatedNotesRoute
   '/outils': typeof AuthenticatedOutilsRoute
   '/parametres': typeof AuthenticatedParametresRoute
   '/scanner': typeof AuthenticatedScannerRoute
   '/transformer': typeof AuthenticatedTransformerRoute
+  '/matieres/$subjectId': typeof AuthenticatedMatieresSubjectIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,12 +118,13 @@ export interface FileRoutesByTo {
   '/accueil': typeof AuthenticatedAccueilRoute
   '/devoirs': typeof AuthenticatedDevoirsRoute
   '/ia': typeof AuthenticatedIaRoute
-  '/matieres': typeof AuthenticatedMatieresRoute
+  '/matieres': typeof AuthenticatedMatieresRouteWithChildren
   '/notes': typeof AuthenticatedNotesRoute
   '/outils': typeof AuthenticatedOutilsRoute
   '/parametres': typeof AuthenticatedParametresRoute
   '/scanner': typeof AuthenticatedScannerRoute
   '/transformer': typeof AuthenticatedTransformerRoute
+  '/matieres/$subjectId': typeof AuthenticatedMatieresSubjectIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -126,12 +135,13 @@ export interface FileRoutesById {
   '/_authenticated/accueil': typeof AuthenticatedAccueilRoute
   '/_authenticated/devoirs': typeof AuthenticatedDevoirsRoute
   '/_authenticated/ia': typeof AuthenticatedIaRoute
-  '/_authenticated/matieres': typeof AuthenticatedMatieresRoute
+  '/_authenticated/matieres': typeof AuthenticatedMatieresRouteWithChildren
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/outils': typeof AuthenticatedOutilsRoute
   '/_authenticated/parametres': typeof AuthenticatedParametresRoute
   '/_authenticated/scanner': typeof AuthenticatedScannerRoute
   '/_authenticated/transformer': typeof AuthenticatedTransformerRoute
+  '/_authenticated/matieres/$subjectId': typeof AuthenticatedMatieresSubjectIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/parametres'
     | '/scanner'
     | '/transformer'
+    | '/matieres/$subjectId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/parametres'
     | '/scanner'
     | '/transformer'
+    | '/matieres/$subjectId'
   id:
     | '__root__'
     | '/'
@@ -177,6 +189,7 @@ export interface FileRouteTypes {
     | '/_authenticated/parametres'
     | '/_authenticated/scanner'
     | '/_authenticated/transformer'
+    | '/_authenticated/matieres/$subjectId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -279,14 +292,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTransformerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/matieres/$subjectId': {
+      id: '/_authenticated/matieres/$subjectId'
+      path: '/$subjectId'
+      fullPath: '/matieres/$subjectId'
+      preLoaderRoute: typeof AuthenticatedMatieresSubjectIdRouteImport
+      parentRoute: typeof AuthenticatedMatieresRoute
+    }
   }
 }
+
+interface AuthenticatedMatieresRouteChildren {
+  AuthenticatedMatieresSubjectIdRoute: typeof AuthenticatedMatieresSubjectIdRoute
+}
+
+const AuthenticatedMatieresRouteChildren: AuthenticatedMatieresRouteChildren = {
+  AuthenticatedMatieresSubjectIdRoute: AuthenticatedMatieresSubjectIdRoute,
+}
+
+const AuthenticatedMatieresRouteWithChildren =
+  AuthenticatedMatieresRoute._addFileChildren(
+    AuthenticatedMatieresRouteChildren,
+  )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccueilRoute: typeof AuthenticatedAccueilRoute
   AuthenticatedDevoirsRoute: typeof AuthenticatedDevoirsRoute
   AuthenticatedIaRoute: typeof AuthenticatedIaRoute
-  AuthenticatedMatieresRoute: typeof AuthenticatedMatieresRoute
+  AuthenticatedMatieresRoute: typeof AuthenticatedMatieresRouteWithChildren
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedOutilsRoute: typeof AuthenticatedOutilsRoute
   AuthenticatedParametresRoute: typeof AuthenticatedParametresRoute
@@ -298,7 +331,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccueilRoute: AuthenticatedAccueilRoute,
   AuthenticatedDevoirsRoute: AuthenticatedDevoirsRoute,
   AuthenticatedIaRoute: AuthenticatedIaRoute,
-  AuthenticatedMatieresRoute: AuthenticatedMatieresRoute,
+  AuthenticatedMatieresRoute: AuthenticatedMatieresRouteWithChildren,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedOutilsRoute: AuthenticatedOutilsRoute,
   AuthenticatedParametresRoute: AuthenticatedParametresRoute,
