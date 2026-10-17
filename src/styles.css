@@ -109,6 +109,14 @@
 .skeleton-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
 .skeleton-columns > div { height: 145px; }
 .search-results { min-height: 170px; display: grid; align-content: center; justify-items: center; gap: 12px; text-align: center; }
+.search-results:has(.search-group) { align-content: start; justify-items: stretch; text-align: left; }
+.search-group { display: grid; gap: 4px; }
+.search-group-title { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground); margin: 8px 0 2px; }
+.search-result { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 10px; border-radius: var(--radius); color: var(--foreground); text-decoration: none; }
+.search-result:hover { background: var(--accent); }
+.search-result:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+.search-result-title { font-weight: 600; }
+.search-result-excerpt { display: block; font-size: 13px; color: var(--muted-foreground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .more-links { display: grid; gap: 6px; }
 @keyframes breathe { 50% { opacity: .45; } }
 @media (min-width: 1450px) { .page { padding-top: 48px; } .empty-subjects { min-height: 250px; } }
