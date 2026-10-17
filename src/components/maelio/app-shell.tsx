@@ -20,7 +20,7 @@ function Initial({ name, avatarUrl }: { name: string | null; avatarUrl?: string 
   const letter = name?.trim()?.[0]?.toUpperCase();
   return <span className="avatar" aria-hidden="true">{letter ?? <UserRound size={18}/>}</span>;
 }
-import { Brand, icons } from './visuals';
+import { Brand, FolderArt, icons } from './visuals';
 
 function Onboarding({ userId, open, onDone }: { userId: string; open: boolean; onDone: () => void }) {
   const [firstName, setFirstName] = useState('');
