@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { useEffect, useRef, useState } from 'react';
+import { createFileRoute, useBlocker } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { NotebookPen, Pencil, Plus, Trash2 } from 'lucide-react';
@@ -13,6 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { PageSkeleton } from '@/components/maelio/visuals';
 import { pageHead } from '@/lib/maelio';
 import { formatDate, notesQuery, subjectsQuery, type Note } from '@/lib/workspace';
+import { createNoteAutosave, type NoteDraft, type SaveState } from '@/lib/note-autosave';
 
 export const Route = createFileRoute('/_authenticated/notes')({ head: () => pageHead('Notes', 'Vos idées, vos cours, vos mots.'), component: NotesPage, pendingComponent: PageSkeleton });
 
@@ -28,26 +29,68 @@ function NotesPage() {
   const [subjectId, setSubjectId] = useState('');
   const [deleting, setDeleting] = useState<Note | null>(null);
   const [busy, setBusy] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>('saved');
+  const autosave = useRef<ReturnType<typeof createNoteAutosave> | null>(null);
+  const draft = useRef<NoteDraft>({ title: '', content: '', subject_id: null });
+
+  useBlocker({
+    shouldBlockFn: async () => {
+      try { await autosave.current?.flush(); return false; }
+      catch { toast.error('La note n’est pas enregistrée. Réessaie avant de quitter la page.'); return true; }
+    },
+    enableBeforeUnload: saveState !== 'saved',
+  });
+  useEffect(() => () => { autosave.current?.dispose(); }, []);
 
   const subjectName = (id: string | null) => subjects.find(s => s.id === id)?.name ?? null;
 
-  function openCreate() { setEditing(null); setTitle(''); setContent(''); setSubjectId(''); setDialogOpen(true); }
-  function openEdit(n: Note) { setEditing(n); setTitle(n.title); setContent(n.content); setSubjectId(n.subject_id ?? ''); setDialogOpen(true); }
-  function refresh() { queryClient.invalidateQueries({ queryKey: ['notes', user.id] }); }
+  function refresh() {
+    void queryClient.invalidateQueries({ queryKey: ['notes', user.id] });
+    void queryClient.invalidateQueries({ queryKey: ['search', user.id] });
+  }
 
-  async function save(e: FormEvent) {
-    e.preventDefault();
-    if (!title.trim() && !content.trim()) { toast.error('Écris au moins un titre ou un contenu.'); return; }
-    setBusy(true);
-    const payload = { title: title.trim(), content, subject_id: subjectId || null };
-    const { error } = editing
-      ? await supabase.from('notes').update(payload).eq('id', editing.id)
-      : await supabase.from('notes').insert({ ...payload, user_id: user.id });
-    setBusy(false);
-    if (error) { toast.error('Impossible d’enregistrer la note. Réessaie.'); return; }
-    toast.success(editing ? 'Note modifiée.' : 'Note ajoutée.');
-    setDialogOpen(false);
-    refresh();
+  function openEditor(note: Note | null) {
+    autosave.current?.dispose();
+    setEditing(note);
+    draft.current = { title: note?.title ?? '', content: note?.content ?? '', subject_id: note?.subject_id ?? null };
+    setTitle(draft.current.title); setContent(draft.current.content); setSubjectId(draft.current.subject_id ?? '');
+    setSaveState('saved');
+    let noteId = note?.id ?? null;
+    autosave.current = createNoteAutosave(draft.current, !note, async payload => {
+      const result = noteId
+        ? await supabase.from('notes').update(payload).eq('id', noteId).eq('user_id', user.id).select('id, title, content, subject_id, updated_at').single()
+        : await supabase.from('notes').insert({ ...payload, user_id: user.id }).select('id, title, content, subject_id, updated_at').single();
+      if (result.error) throw result.error;
+      noteId = result.data.id;
+      queryClient.setQueryData<Note[]>(['notes', user.id], old => [result.data, ...(old ?? []).filter(n => n.id !== result.data.id)]);
+      refresh();
+    }, setSaveState);
+    setDialogOpen(true);
+  }
+  function openCreate() { openEditor(null); }
+  function openEdit(note: Note) { openEditor(note); }
+
+  function changeDraft(patch: Partial<NoteDraft>) {
+    draft.current = { ...draft.current, ...patch };
+    setTitle(draft.current.title); setContent(draft.current.content); setSubjectId(draft.current.subject_id ?? '');
+    autosave.current?.update(draft.current);
+  }
+
+  async function closeEditor() {
+    if (closing) return;
+    setClosing(true);
+    try {
+      await autosave.current?.flush();
+      autosave.current?.dispose();
+      setDialogOpen(false);
+    } catch { toast.error('Impossible d’enregistrer la note. Tes modifications restent ouvertes.'); }
+    finally { setClosing(false); }
+  }
+
+  async function retrySave() {
+    try { await autosave.current?.flush(); }
+    catch { toast.error('Impossible d’enregistrer la note. Vérifie ta connexion et réessaie.'); }
   }
 
   async function remove() {
@@ -88,23 +131,29 @@ function NotesPage() {
         </ul>
       )}
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={open => { if (!open) void closeEditor(); }}>
         <DialogContent>
           <DialogTitle>{editing ? 'Modifier la note' : 'Nouvelle note'}</DialogTitle>
           <DialogDescription>{editing ? 'Modifie ta note.' : 'Une idée, un cours, un résumé…'}</DialogDescription>
-          <form onSubmit={save} className="space-y-3">
-            <div className="space-y-1.5"><Label htmlFor="note-title">Titre</Label><Input id="note-title" value={title} onChange={e => setTitle(e.target.value)} maxLength={120} autoFocus/></div>
+          <form onSubmit={e => { e.preventDefault(); void closeEditor(); }} className="space-y-3">
+            <fieldset disabled={closing} className="space-y-3">
+            <div className="space-y-1.5"><Label htmlFor="note-title">Titre</Label><Input id="note-title" value={title} onChange={e => changeDraft({ title: e.target.value })} maxLength={120} autoFocus/></div>
             {subjects.length > 0 && (
               <div className="space-y-1.5">
                 <Label htmlFor="note-subject">Matière (facultatif)</Label>
-                <select id="note-subject" value={subjectId} onChange={e => setSubjectId(e.target.value)} className="h-11 w-full rounded-md border bg-background px-3 text-sm">
+                <select id="note-subject" value={subjectId} onChange={e => changeDraft({ subject_id: e.target.value || null })} className="h-11 w-full rounded-md border bg-background px-3 text-sm">
                   <option value="">Aucune matière</option>
                   {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>
             )}
-            <div className="space-y-1.5"><Label htmlFor="note-content">Contenu</Label><Textarea id="note-content" value={content} onChange={e => setContent(e.target.value)} rows={6}/></div>
-            <Button type="submit" disabled={busy} className="w-full">{editing ? 'Enregistrer' : 'Ajouter'}</Button>
+            <div className="space-y-1.5"><Label htmlFor="note-content">Contenu</Label><Textarea id="note-content" value={content} onChange={e => changeDraft({ content: e.target.value })} rows={6}/></div>
+            </fieldset>
+            <p role="status" aria-live="polite" className={saveState === 'error' ? 'text-sm text-destructive' : 'text-sm text-muted-foreground'}>
+              {saveState === 'error' ? 'Non enregistré — vérifie ta connexion.' : saveState === 'saving' ? 'Enregistrement…' : saveState === 'pending' ? 'Modifications en attente…' : 'Enregistré'}
+            </p>
+            {saveState === 'error' && <Button type="button" variant="outline" onClick={() => void retrySave()}>Réessayer</Button>}
+            <Button type="submit" disabled={closing} className="w-full">Terminer</Button>
           </form>
         </DialogContent>
       </Dialog>
