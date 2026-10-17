@@ -17,4 +17,4 @@
 - [x] Accueil branché sur les vraies matières et notes.
 - [x] Fichiers par matière (upload dans les dossiers).
 - [x] Devoirs réels avec dates.
-- [ ] Recherche réelle dans matières et notes.
+- [x] Recherche réelle dans matières et notes.
