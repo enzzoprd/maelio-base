@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { sections, initialProfile, accountLabel } from '@/lib/maelio';
-import { useAvatarUrl } from '@/lib/workspace';
+import { useAvatarUrl, searchQuery } from '@/lib/workspace';
 
 function Initial({ name, avatarUrl }: { name: string | null; avatarUrl?: string | null }) {
   const signed = useAvatarUrl(avatarUrl);
@@ -57,6 +57,8 @@ export function AppShell() {
   const pathname = useRouterState({ select: s => s.location.pathname });
   const { user } = useRouteContext({ from: '/_authenticated' });
   const { data: profile = initialProfile } = useQuery(profileQuery(user.id));
+  const trimmedQuery = query.trim();
+  const { data: results, isFetching: searching } = useQuery(searchQuery(user.id, trimmedQuery));
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const needsOnboarding = profile !== initialProfile && !profile.onboardedAt;
