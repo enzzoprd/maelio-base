@@ -46,6 +46,25 @@ export function useAvatarUrl(path: string | null | undefined) {
   }).data ?? null;
 }
 
+export type SearchResults = { subjects: Subject[]; notes: Note[] };
+
+/** Recherche dans les matières et les notes de l'utilisateur uniquement. */
+export const searchQuery = (userId: string, term: string) =>
+  queryOptions({
+    queryKey: ['search', userId, term],
+    enabled: term.trim().length > 0,
+    queryFn: async (): Promise<SearchResults> => {
+      const pattern = `%${term.trim().replace(/[%_]/g, '')}%`;
+      const [subjects, notes] = await Promise.all([
+        supabase.from('subjects').select('id, name, created_at').eq('user_id', userId).ilike('name', pattern).order('name').limit(10),
+        supabase.from('notes').select('id, title, content, subject_id, updated_at').eq('user_id', userId).or(`title.ilike.${pattern},content.ilike.${pattern}`).order('updated_at', { ascending: false }).limit(10),
+      ]);
+      if (subjects.error) throw subjects.error;
+      if (notes.error) throw notes.error;
+      return { subjects: subjects.data ?? [], notes: notes.data ?? [] };
+    },
+  });
+
 export function formatDate(iso: string) {
   return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso));
 }
