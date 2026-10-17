@@ -15,3 +15,4 @@
 - Keep empty workspace data in the browser-safe Maelio module; never seed examples or infer a student identity.
 - Phase-one actions must disclose their unavailable state without saving, uploading, or producing results; reusable skeletons are reserved for actual pending navigation.
 - Use global semantic design tokens and reusable Button variants for all presentation and controls to preserve consistent accessibility.
+- Use a serialized autosave queue per note editor and flush before closing or internal navigation; this prevents stale writes and lost pending edits.
