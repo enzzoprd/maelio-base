@@ -1,0 +1,6 @@
+Correctifs Maelio (lot 1)
+- src/lib/account.functions.ts : la suppression de compte efface aussi les fichiers (documents, avatars) et les devoirs.
+- .env.example : liste des variables, sans aucune valeur.
+- package.json : ajout du script "typecheck".
+- docs/migrations/0005_roles_and_subscriptions.sql : référence de la migration déjà appliquée sur la base.
+A déposer à la racine du dépôt GitHub maelio-base (Add file > Upload files), en gardant les dossiers.
