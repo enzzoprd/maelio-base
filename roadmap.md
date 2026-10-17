@@ -18,3 +18,4 @@
 - [x] Fichiers par matière (upload dans les dossiers).
 - [x] Devoirs réels avec dates.
 - [x] Recherche réelle dans matières et notes.
+- [ ] Enregistrement automatique des notes et vérification après changement de page.
