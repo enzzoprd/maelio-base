@@ -64,9 +64,12 @@ function AuthPage() {
   }
 
   async function google() {
-    setError(null);
-    const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: window.location.origin + '/connexion' });
-    if (result.error) setError('La connexion avec Google a échoué. Réessaie.');
+     setError(null);
+     const { error } = await supabase.auth.signInWithOAuth({
+       provider: 'google',
+       options: { redirectTo: window.location.origin + '/accueil' },
+     });
+     if (error) setError('La connexion avec Google a échoué. Réessaie.');
   }
 
   const titles: Record<Mode, string> = { connexion: 'Content de te revoir', inscription: 'Crée ton compte', oubli: 'Mot de passe oublié' };
