@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { createFileRoute, useBlocker } from '@tanstack/react-router';
+import { createFileRoute, Link, useBlocker } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { NotebookPen, Pencil, Plus, Trash2 } from 'lucide-react';
@@ -108,7 +108,7 @@ function NotesPage() {
     <div className="page">
       <div className="page-intro">
         <div><div className="eyebrow">MON ESPACE MAELIO</div><h1>Notes</h1><p className="intro-sub">Vos idées, vos cours, vos mots.</p></div>
-        <Button onClick={openCreate}><Plus/>Nouvelle note</Button>
+         <div className="flex flex-wrap gap-2"><Button variant="outline" asChild><Link to="/memos">Mes mémos</Link></Button><Button onClick={openCreate}><Plus/>Nouvelle note</Button></div>
       </div>
 
       {notes.length === 0 ? (
