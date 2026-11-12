@@ -25,7 +25,8 @@ export async function refundCredit(userId: string): Promise<void> {
   if (error) console.error('[gemini] remboursement du crédit impossible', error.message);
 }
 
-export type GeminiContent = { role: 'user' | 'model'; parts: { text: string }[] };
+export type GeminiPart = { text: string } | { inline_data: { mime_type: string; data: string } };
+export type GeminiContent = { role: 'user' | 'model'; parts: GeminiPart[] };
 
 export async function generateText(options: { system: string; contents: GeminiContent[]; maxOutputTokens?: number }): Promise<string> {
   const apiKey = process.env['GEMINI_API_KEY'];
