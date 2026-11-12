@@ -39,7 +39,7 @@ export const scanDocument = createServerFn({ method: 'POST' })
     // 2. Lire l'image avec Gemini ; si cela échoue, le crédit est rendu.
     let text = '';
     try {
-      const model = process.env['GEMINI_MODEL'] || 'gemini-2.5-flash-lite';
+      const model = process.env['GEMINI_MODEL'] || 'gemini-3.1-flash-lite';
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
         {
