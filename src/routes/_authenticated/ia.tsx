@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Plus, Send, Trash2 } from 'lucide-react';
+import { Paperclip, Plus, Send, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +14,7 @@ import { memosQuery } from '@/lib/memos';
 import { DAILY_FREE_CREDITS } from '@/lib/credits';
 import { creditsQuery } from '@/lib/credits-query';
 import { askAssistant } from '@/lib/ia.functions';
+import { prepareAttachment, type Attachment } from '@/lib/attachment';
 import { conversationsQuery, deleteConversation, messagesQuery, type Conversation, type StoredMessage } from '@/lib/ia-history';
 
 export const Route = createFileRoute('/_authenticated/ia')({
@@ -47,6 +48,9 @@ function IaPage() {
   const [deleting, setDeleting] = useState<Conversation | null>(null);
   const [removing, setRemoving] = useState(false);
   const bottom = useRef<HTMLDivElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [attachment, setAttachment] = useState<Attachment | null>(null);
+  const [preparing, setPreparing] = useState(false);
 
   const shown: Message[] = [
     ...(activeId ? stored.map(m => ({ role: m.role, content: m.content })) : []),
@@ -74,15 +78,27 @@ function IaPage() {
     setSource(c.source_kind && c.source_id ? `${c.source_kind}:${c.source_id}` : '');
   }
 
+  async function pickFile(file: File | undefined) {
+    if (!file) return;
+    setPreparing(true);
+    setError(null);
+    try { setAttachment(await prepareAttachment(file)); }
+    catch (e) { setAttachment(null); setError(e instanceof Error ? e.message : 'Impossible de joindre ce fichier.'); }
+    finally { setPreparing(false); }
+  }
+
   async function send() {
-    const question = input.trim();
-    if (!question || busy || noCredits) return;
+    const typed = input.trim();
+    if ((!typed && !attachment) || busy || preparing || noCredits) return;
+    const sentAttachment = attachment;
+    const question = [typed, sentAttachment ? `[Pièce jointe : ${sentAttachment.name.replace(/[\[\]\r\n]/g, ' ')}]` : ''].filter(Boolean).join('\n');
     setPending(question);
     setInput('');
+    setAttachment(null);
     setError(null);
     setBusy(true);
     try {
-      const result = await askAssistant({ data: { conversationId: activeId, message: question, source: parseSource(source) } });
+      const result = await askAssistant({ data: { conversationId: activeId, message: question, source: parseSource(source), attachment: sentAttachment } });
       queryClient.setQueryData(['ai-credits', user.id], result.remaining);
       if (result.saved && result.conversationId) {
         const id = result.conversationId;
@@ -100,7 +116,8 @@ function IaPage() {
         toast.error('Cette réponse n’a pas pu être enregistrée dans l’historique.');
       }
     } catch (e) {
-      setInput(question);
+      setInput(typed);
+      setAttachment(sentAttachment);
       setError(e instanceof Error && e.message ? e.message : 'L’assistant n’a pas pu répondre. Réessaie.');
       void queryClient.invalidateQueries({ queryKey: ['ai-credits', user.id] });
     } finally {
@@ -200,6 +217,14 @@ function IaPage() {
           {error && <p role="alert" className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
           {noCredits && <p className="text-sm text-muted-foreground" role="status">Tu as utilisé tous tes crédits du jour. Ils reviennent demain.</p>}
 
+          <input ref={fileInput} type="file" accept="image/*,application/pdf,.pdf" className="sr-only" aria-label="Joindre une image ou un PDF" onChange={e => { void pickFile(e.target.files?.[0]); e.target.value = ''; }}/>
+          {(attachment || preparing) && (
+            <div className="flex items-center gap-2 rounded-md border bg-card px-3 py-2 text-sm" role="status">
+              <Paperclip size={16} aria-hidden="true"/>
+              <span className="min-w-0 flex-1 truncate">{preparing ? 'Préparation du fichier…' : attachment?.name}</span>
+              {attachment && <Button type="button" variant="ghost" size="icon" aria-label="Retirer la pièce jointe" title="Retirer" onClick={() => setAttachment(null)} disabled={busy}><X size={16}/></Button>}
+            </div>
+          )}
           <form className="flex items-end gap-2" onSubmit={e => { e.preventDefault(); void send(); }}>
             <div className="flex-1 space-y-1.5">
               <Label htmlFor="ia-input" className="sr-only">Ta question</Label>
@@ -214,9 +239,10 @@ function IaPage() {
                 disabled={busy}
               />
             </div>
-            <Button type="submit" disabled={busy || noCredits || !input.trim()} aria-label="Envoyer (1 crédit)"><Send/>Envoyer</Button>
+            <Button type="button" variant="outline" size="icon" aria-label="Joindre une image ou un PDF" title="Joindre une image ou un PDF" onClick={() => fileInput.current?.click()} disabled={busy || preparing}><Paperclip/></Button>
+            <Button type="submit" disabled={busy || preparing || noCredits || (!input.trim() && !attachment)} aria-label="Envoyer (1 crédit)"><Send/>Envoyer</Button>
           </form>
-          <p className="text-xs text-muted-foreground">Chaque réponse coûte 1 crédit. L’assistant peut se tromper : vérifie avec ton cours. Tes conversations sont enregistrées dans ton compte et supprimées avec lui.</p>
+          <p className="text-xs text-muted-foreground">Chaque réponse coûte 1 crédit. Pièce jointe : une image ou un PDF de 3 Mo maximum, envoyé à Google (Gemini) puis non conservé par Maelio (seul son nom apparaît dans l’historique). L’assistant peut se tromper : vérifie avec ton cours. Tes conversations sont enregistrées dans ton compte et supprimées avec lui.</p>
         </div>
       </div>
 
